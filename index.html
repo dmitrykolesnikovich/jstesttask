@@ -1,0 +1,44 @@
+<html lang="en">
+<head>
+    <script src="https://pixijs.download/release/pixi.min.js"></script>
+    <title>test</title>
+    <style>* {
+        padding: 0;
+        margin: 0
+    }</style>
+</head>
+<body>
+<script>
+    fetch('https://hgstudio.ru/jstesttask/levels/1/level.json')
+        .then((response) => response.json())
+        .then((json) => console.log(json));
+    /*PIXI.loadJson.load("https://hgstudio.ru/jstesttask/levels/1/level.json").then((file) => {
+        const app = new PIXI.Application({
+            background: '#313434',
+            width: window.innerWidth,
+            height: window.innerHeight,
+        });
+        app.renderer.autoDensity = true;
+        document.body.appendChild(app.view);
+        const container = new PIXI.Container();
+        app.stage.addChild(container);
+
+        // Create a new texture
+        const texture = PIXI.Texture.from('levels/1/images/1.jpg');
+
+        // Create a 5x5 grid of bunnies
+        const bunny = new PIXI.Sprite(texture);
+        bunny.x = 0;
+        bunny.y = 0;
+        container.addChild(bunny);
+
+        window.onresize = () => {
+            app.renderer.resize(window.innerWidth, window.innerHeight);
+        };
+    });*/
+
+
+
+</script>
+</body>
+</html>
