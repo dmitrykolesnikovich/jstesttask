@@ -9,29 +9,32 @@
 </head>
 <body>
 <script>
-    PIXI.loadJson.load("levels/1/level.json").then((file) => {
-        const app = new PIXI.Application({
-            background: '#313434',
-            width: window.innerWidth,
-            height: window.innerHeight,
-        });
-        app.renderer.autoDensity = true;
-        document.body.appendChild(app.view);
-        const container = new PIXI.Container();
-        app.stage.addChild(container);
+    const app = new PIXI.Application({
+        background: '#313434',
+        width: window.innerWidth,
+        height: window.innerHeight,
+    });
+    app.renderer.autoDensity = true;
+    document.body.appendChild(app.view);
+    const container = new PIXI.Container();
+    app.stage.addChild(container);
+    window.onresize = () => {
+        app.renderer.resize(window.innerWidth, window.innerHeight);
+    };
 
-        // Create a new texture
-        const texture = PIXI.Texture.from('levels/1/images/1.jpg');
+    // load level
+    PIXI.loadJson.load("levels/1/level.json").then((level) => {
+        for (let slot of level.slots) {
+            const sprite = PIXI.Sprite.from(`levels/1/images/${slot.name}.jpg`);
+            sprite.x = slot.x;
+            sprite.y = slot.y;
+            container.addChild(sprite);
 
-        // Create a 5x5 grid of bunnies
-        const bunny = new PIXI.Sprite(texture);
-        bunny.x = 0;
-        bunny.y = 0;
-        container.addChild(bunny);
+            if (slot.layer !== "standart") {
+                sprite.tint = new PIXI.Color(0xFF00FF);
+            }
+        }
 
-        window.onresize = () => {
-            app.renderer.resize(window.innerWidth, window.innerHeight);
-        };
     });
 </script>
 </body>
