@@ -22,20 +22,43 @@
         app.renderer.resize(window.innerWidth, window.innerHeight);
     };
 
-    // load level
-    PIXI.loadJson.load("levels/1/level.json").then((level) => {
-        for (let slot of level.slots) {
-            const sprite = PIXI.Sprite.from(`levels/1/images/${slot.name}.jpg`);
-            sprite.x = slot.x;
-            sprite.y = slot.y;
-            container.addChild(sprite);
+    const Orientation = {
+        LANDSCAPE: 1,
+        PORTRAIT: 2,
+    }
 
-            if (slot.layer !== "standart") {
-                sprite.tint = new PIXI.Color(0xFF00FF);
+    function loadLevel(levelId) {
+        container.removeChildren()
+        PIXI.loadJson.load(`levels/${levelId}/level.json`).then((level) => {
+            const mainSlot = level.slots.find(it => it.layer === "standart")
+            const orientation = mainSlot.width > mainSlot.height ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
+            const width = mainSlot.width;
+            const height = mainSlot.height;
+
+            const mainSprite = PIXI.Sprite.from(`levels/${levelId}/images/${mainSlot.name}.jpg`);
+            mainSprite.x = mainSlot.x;
+            mainSprite.y = mainSlot.y;
+            container.addChild(mainSprite);
+            for (let slot of level.slots) {
+                const sprite = PIXI.Sprite.from(`levels/${levelId}/images/${slot.name}.jpg`);
+                sprite.x = slot.x;
+                sprite.y = slot.y;
+
+                if (orientation === Orientation.LANDSCAPE) {
+                    sprite.y += height + 8;
+                } else if (orientation === Orientation.PORTRAIT) {
+                    sprite.x += width + 8;
+                }
+                container.addChild(sprite);
+
+                if (slot !== mainSlot) {
+                    sprite.tint = new PIXI.Color(0x8888ff);
+                }
             }
-        }
+        });
+    }
 
-    });
+    loadLevel(4);
 </script>
 </body>
 </html>
