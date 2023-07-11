@@ -9,10 +9,7 @@
 </head>
 <body>
 <script>
-    fetch('levels/1/level.json')
-        .then((response) => response.json())
-        .then((json) => console.log(json));
-    /*PIXI.loadJson.load("https://hgstudio.ru/jstesttask/levels/1/level.json").then((file) => {
+    PIXI.loadJson.load("levels/1/level.json").then((file) => {
         const app = new PIXI.Application({
             background: '#313434',
             width: window.innerWidth,
@@ -35,10 +32,7 @@
         window.onresize = () => {
             app.renderer.resize(window.innerWidth, window.innerHeight);
         };
-    });*/
-
-
-
+    });
 </script>
 </body>
 </html>
