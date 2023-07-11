@@ -51,8 +51,24 @@
                 }
                 container.addChild(sprite);
 
+                sprite.interactive = true;
                 if (slot !== mainSlot) {
+                    sprite.on('pointerdown', () => {
+                        const graphics = new PIXI.Graphics()
+                        graphics.lineStyle(2, 0x22ff22, 1);
+                        graphics.drawRect(0, 0, sprite.width, sprite.height);
+                        graphics.endFill();
+                        sprite.addChild(graphics);
+                    });
                     sprite.tint = new PIXI.Color(0x8888ff);
+                } else {
+                    sprite.on('pointerdown', (event) => {
+                        const graphics = new PIXI.Graphics()
+                        graphics.lineStyle(2, 0xff2222, 1);
+                        graphics.drawRect(event.x, event.y, 64, 64);
+                        graphics.endFill();
+                        sprite.addChild(graphics);
+                    });
                 }
             }
         });
