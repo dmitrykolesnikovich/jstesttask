@@ -1,7 +1,7 @@
 {
   "slots": [
     {
-      "name": "layer_0", // https://hgstudio.ru/jstesttask/levels/1/images/layer_0.jpg
+      "name": "layer_0",
       "layer": "standart",
       "width": 1155,
       "height": 500,
@@ -15,7 +15,7 @@
       "SourceCenterY": 500.0
     },
     {
-      "name": "10", // https://hgstudio.ru/jstesttask/levels/1/images/10.jpg
+      "name": "10",
       "layer": "LayerA",
       "width": 382,
       "height": 55,
