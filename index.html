@@ -11,6 +11,7 @@
 <script>
     const app = new PIXI.Application({
         background: '#313434',
+        resolution: window.devicePixelRatio || 1,
         width: window.innerWidth,
         height: window.innerHeight,
     });
@@ -18,9 +19,6 @@
     document.body.appendChild(app.view);
     const container = new PIXI.Container();
     app.stage.addChild(container);
-    window.onresize = () => {
-        app.renderer.resize(window.innerWidth, window.innerHeight);
-    };
 
     const Orientation = {
         LANDSCAPE: 1,
@@ -29,11 +27,22 @@
 
     function loadLevel(levelId) {
         container.removeChildren()
-        PIXI.loadJson.load(`levels/${levelId}/level.json`).then((level) => {
+        PIXI.Assets.loader.load(`levels/${levelId}/level.json`).then((level) => {
             const mainSlot = level.slots.find(it => it.layer === "standart")
             const orientation = mainSlot.width > mainSlot.height ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
             const width = mainSlot.width;
             const height = mainSlot.height;
+
+            window.onresize = () => {
+                const canvas_width = orientation == Orientation.LANDSCAPE ? mainSlot.width : 2 * mainSlot.width;
+                const canvas_height = orientation == Orientation.LANDSCAPE ? 2 * mainSlot.height : mainSlot.height;
+                const widthRatio = window.innerWidth / canvas_width;
+                const heightRatio = window.innerHeight / canvas_height;
+                const ratio = Math.min(widthRatio, heightRatio);
+                app.renderer.resize(window.innerWidth, window.innerHeight);
+                app.view.scale.set(ratio);
+            };
+            window.dispatchEvent(new Event('resize'));
 
             const mainSprite = PIXI.Sprite.from(`levels/${levelId}/images/${mainSlot.name}.jpg`);
             mainSprite.x = mainSlot.x;
@@ -43,38 +52,54 @@
                 const sprite = PIXI.Sprite.from(`levels/${levelId}/images/${slot.name}.jpg`);
                 sprite.x = slot.x;
                 sprite.y = slot.y;
-
-                if (orientation === Orientation.LANDSCAPE) {
-                    sprite.y += height + 8;
-                } else if (orientation === Orientation.PORTRAIT) {
-                    sprite.x += width + 8;
-                }
                 container.addChild(sprite);
-
                 sprite.interactive = true;
+
+                if (slot.layer === "LayerB" || slot.layer === "standart") {
+                    if (orientation === Orientation.LANDSCAPE) {
+                     const sprite = PIXI.Sprite.from(`levels/${levelId}/images/${slot.name}.jpg`);
+                        sprite.x = slot.x;
+                        sprite.y = slot.y + height;
+                        container.addChild(sprite);
+                        sprite.interactive = true;
+                        sprite.on('pointerdown', () => {
+                            if (slot.layer === "standart") return;
+                            const graphics = new PIXI.Graphics()
+                            graphics.lineStyle(4, 0x22ff22, 1);
+                            graphics.drawRect(sprite.x, sprite.y, sprite.width, sprite.height);
+                            graphics.endFill();
+                            container.addChild(graphics);
+                        });
+                    } else if (orientation === Orientation.PORTRAIT) {
+                        sprite.x += width;
+                    }
+                }
+
                 if (slot !== mainSlot) {
                     sprite.on('pointerdown', () => {
+                        if (slot.layer === "standart") return;
                         const graphics = new PIXI.Graphics()
                         graphics.lineStyle(2, 0x22ff22, 1);
-                        graphics.drawRect(0, 0, sprite.width, sprite.height);
+                        graphics.drawRect(sprite.x, sprite.y, sprite.width, sprite.height);
                         graphics.endFill();
-                        sprite.addChild(graphics);
+                        container.addChild(graphics);
                     });
-                    sprite.tint = new PIXI.Color(0x8888ff);
+                    // sprite.tint = new PIXI.Color(0xff0000);
                 } else {
-                    sprite.on('pointerdown', (event) => {
-                        const graphics = new PIXI.Graphics()
-                        graphics.lineStyle(2, 0xff2222, 1);
-                        graphics.drawRect(event.x, event.y, 64, 64);
-                        graphics.endFill();
-                        sprite.addChild(graphics);
-                    });
+<!--                    sprite.on('pointerdown', (event) => {-->
+<!--                        const graphics = new PIXI.Graphics()-->
+<!--                        graphics.lineStyle(2, 0xff2222, 1);-->
+<!--                        graphics.drawRect(event.x, event.y, 64, 64);-->
+<!--                        graphics.endFill();-->
+<!--                        sprite.addChild(graphics);-->
+<!--                        graphics.alpha = 1;-->
+<!--                    });-->
                 }
             }
         });
     }
 
-    loadLevel(4);
+    loadLevel(5);
 </script>
 </body>
 </html>
