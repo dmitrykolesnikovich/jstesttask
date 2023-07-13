@@ -3,7 +3,7 @@ const CANVAS_RATIO = 9.0 / 16.0;
 function initializeCanvas() {
     const canvas = document.querySelector("#mainCanvas");
 
-    function resize() {
+    function resizeCanvas() {
         // 1. actual ratio
         const emptySpace = 2 * parseInt(canvas.style.padding);
         const actualRatio = (window.innerWidth - emptySpace) / (window.innerHeight - emptySpace);
@@ -26,7 +26,7 @@ function initializeCanvas() {
         canvas.height = height * window.devicePixelRatio;
     }
 
-    window.onresize = () => resize();
-    resize();
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
     return canvas;
 }

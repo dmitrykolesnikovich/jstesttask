@@ -1,20 +1,80 @@
-function initializeLayout(screen) {
-    const container = new PIXI.Container()
+function initializeLayout(app, level) {
+    const layout = new PIXI.Container();
 
-    // LayerA
-    const spriteA = container.addChild(new PIXI.Sprite(screen.layerA.texture));
+    // 1. main
+    const mainContainer = layout.addChild(new PIXI.Container());
+    const spriteA = mainContainer.addChild(new PIXI.Sprite(level.layerImage));
+    drawRoundedCorners(spriteA, 24)
     spriteA.position.set(0, 0);
-
-    const spriteB = container.addChild(new PIXI.Sprite(screen.layerA.texture));
-    switch (screen.orientation) {
+    const spriteB = mainContainer.addChild(new PIXI.Sprite(level.layerImage));
+    drawRoundedCorners(spriteB, 24)
+    const orientation = level.layerSize.width > level.layerSize.height ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
+    switch (orientation) {
         case Orientation.LANDSCAPE: {
-            spriteB.position.set(0, screen.layerA.height + screen.padding);
+            spriteB.position.set(0, level.layerSize.height);
             break;
         }
         case Orientation.PORTRAIT: {
-            spriteB.position.set(screen.layerA.width + screen.padding, 0);
+            spriteB.position.set(level.layerSize.width, 0);
             break;
         }
     }
-    return container;
+    mainContainer.pivot.x = mainContainer.width / 2;
+    mainContainer.pivot.y = mainContainer.height / 2;
+
+
+    // 3. status
+    const container = mainContainer.addChild(new PIXI.Container());
+    container.pivot.set(1, 1);
+    container.x = mainContainer.width;
+    container.y = mainContainer.height;
+
+    const differencesText = container.addChild(new PIXI.Text(`Отличий найдено: `, {
+        fontFamily: 'Filmotype Major',
+        fontSize: 50,
+        fill: 'black',
+        align: 'right'
+    }));
+    differencesText.anchor.set(1, 1);
+    differencesText.y = 64
+
+    const mistakesText = container.addChild(new PIXI.Text(`Ошибок: `, {
+        fontFamily: 'Filmotype Major',
+        fontSize: 50,
+        fill: 'black'
+    }));
+    mistakesText.anchor.set(1, 1);
+    mistakesText.y = 128
+
+    // 2. levelText
+    const levelText = mainContainer.addChild(new PIXI.Text(`Уровень ${level.id}`, {
+        fontFamily: 'Filmotype Major',
+        fontSize: 100,
+        fill: 'black',
+        align: 'center',
+    }));
+    levelText.anchor.set(1)
+    levelText.x = mainContainer.width / 2;
+    levelText.y = -100;
+
+    const canvas = document.querySelector("#mainCanvas");
+
+    function resizeLayout() {
+        let width = orientation === Orientation.LANDSCAPE ? level.layerSize.width : 2 * level.layerSize.width;
+        mainContainer.x = app.screen.width / 2;
+        mainContainer.y = app.screen.height / 2;
+        const canvasWidth = parseFloat(canvas.style.width) + 2 * parseFloat(canvas.style.padding);
+        const scale = canvasWidth / width;
+        mainContainer.scale.set(scale * 0.77);
+    }
+
+    window.addEventListener('resize', resizeLayout);
+    resizeLayout();
+
+
+    return layout;
+}
+
+function drawRoundedCorners(sprite, radius) {
+    sprite.mask = sprite.addChild(new PIXI.Graphics().beginFill(0xff0000, 0.5).drawRoundedRect(0, 0, sprite.width, sprite.height, radius).endFill());
 }

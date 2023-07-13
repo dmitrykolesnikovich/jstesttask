@@ -3,23 +3,21 @@ const Orientation = {
     PORTRAIT: 2,
 }
 
-class Screen {
-    layerA = new Layer()
-    layerB = new Layer()
-    orientation = null;
-}
-
-class Layer {
-    texture = null;
-    width = 0;
-    height = 0;
-    slots = [];
+class Level {
+    id;
+    layerImage;
+    layerSize = {
+        width: 0,
+        height: 0,
+    };
+    slotsA = [];
+    slotsB = [];
 }
 
 class Slot {
+    image;
     x;
     y;
     width;
     height;
-    image;
 }

@@ -2,47 +2,41 @@ PIXI.Assets.init({
     basePath: "../res"
 });
 
-async function loadScreen(levelId) {
-    const screen = new Screen();
+async function loadLevel(levelId) {
+    const level = new Level();
+    level.id = levelId;
 
-    const level = await PIXI.Assets.load(`levels/${levelId}/level.json`);
-    for (let slot of level.slots) {
+    const json = await PIXI.Assets.load(`levels/${levelId}/level.json`);
+    for (let slot of json.slots) {
         switch (slot.layer) {
             case "standart": {
-                screen.layerA = await loadLayer(levelId, slot);
-                screen.layerB = await loadLayer(levelId, slot);
-                screen.orientation = slot.width > slot.height ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
+                level.layerImage = await PIXI.Assets.load(`levels/${levelId}/images/${slot.name}.jpg`);
+                level.layerSize = {
+                    width: slot.width,
+                    height: slot.height
+                };
                 break;
             }
             case "LayerA": {
-                screen.layerA.slots.push(buildSlot(levelId, slot));
+                level.slotsA.push(buildSlot(levelId, slot));
                 break;
             }
             case "LayerB": {
-                screen.layerB.slots.push(buildSlot(levelId, slot));
+                level.slotsB.push(buildSlot(levelId, slot));
                 break;
             }
         }
     }
 
-    initializeLayout(screen);
-    return screen;
-}
-
-async function loadLayer(levelId, json) {
-    const layer = new Layer();
-    layer.texture = await PIXI.Assets.load(`levels/${levelId}/images/${json.name}.jpg`);
-    layer.width = json.width;
-    layer.height = json.height;
-    return layer;
+    return level;
 }
 
 function buildSlot(levelId, json) {
     const slot = new Slot();
+    slot.image = `levels/${levelId}/images/${json.name}.jpg`;
     slot.x = json.x;
     slot.y = json.y;
     slot.width = json.width;
     slot.height = json.height;
-    slot.image = `levels/${levelId}/images/${json.name}.jpg`;
     return slot;
 }
