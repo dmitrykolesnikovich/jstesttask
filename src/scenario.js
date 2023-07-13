@@ -1,21 +1,24 @@
 const context = {
-    levelId: 4,
+    level: null,
+    levelId: 0,
     score: 0,
+    app: null,
+    reset() {
+        this.level = null;
+        if (this.levelId >= 5) {
+            this.levelId = 0
+        }
+        this.score = 0;
+        this.app.stage.removeChildren();
+    }
 }
 
 async function nextLevel() {
-    // reset
-    if (context.levelId >= 5) {
-        context.levelId = 0
-    }
-    context.score = 0;
-    app.stage.removeChildren();
-
-    // setup
+    context.reset();
     const level = await buildLevel(++context.levelId);
     context.level = level;
     const layout = await buildLayout(level);
-    app.stage.addChild(layout);
+    context.app.stage.addChild(layout);
     setupGame(level, layout);
 }
 
