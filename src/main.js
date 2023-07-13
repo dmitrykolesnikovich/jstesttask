@@ -11,8 +11,7 @@ const app = new PIXI.Application({
 document.body.appendChild(app.view);
 
 // game
-await loadFont('fonts/Filmotype_Major.otf');
-const level = await buildLevel(4);
-const layout = await buildLayout(level);
-app.stage.addChild(layout);
-setupGameLoop(level);
+(async function main() {
+    await loadFont('fonts/Filmotype_Major.otf');
+    await nextLevel();
+}());

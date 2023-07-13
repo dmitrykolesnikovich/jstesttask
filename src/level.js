@@ -13,14 +13,24 @@ class Level {
         return this.layerSize.width > this.layerSize.height;
     }
 
+    get size() {
+        return this.slotsA.length + this.slotsB.length;
+    }
+
 }
 
 class Slot {
+
+    name;
     texture;
     x;
     y;
     width;
     height;
+
+    isDone = false;
+    areas = [];
+
 }
 
 async function buildLevel(levelId) {
@@ -52,12 +62,13 @@ async function buildLevel(levelId) {
     return level;
 }
 
-async function buildSlot(levelId, json) {
+async function buildSlot(levelId, slotJson) {
     const slot = new Slot();
-    slot.texture = await loadTexture(levelId, json.name);
-    slot.x = json.x;
-    slot.y = json.y;
-    slot.width = json.width;
-    slot.height = json.height;
+    slot.name = slotJson.name;
+    slot.texture = await loadTexture(levelId, slotJson.name);
+    slot.x = slotJson.x;
+    slot.y = slotJson.y;
+    slot.width = slotJson.width;
+    slot.height = slotJson.height;
     return slot;
 }

@@ -1,6 +1,6 @@
 function buildLayout(level) {
-    // 1. mainView
-    const {mainView, layerA, layerB} = buildMainViewWithLayers(level);
+    // 1. mainView and layers
+    const {mainView, layerA, layerB} = buildMainViewAndLayers(level);
     drawLayerSlots(layerA, level.slotsA);
     drawLayerSlots(layerB, level.slotsB);
     drawLayerCorners(layerA, 16);
@@ -13,7 +13,7 @@ function buildLayout(level) {
     return layout;
 }
 
-function buildMainViewWithLayers(level) {
+function buildMainViewAndLayers(level) {
     // 1. main
     const mainView = new PIXI.Container();
     mainView.position.y = 92
@@ -22,13 +22,20 @@ function buildMainViewWithLayers(level) {
     const layerA = mainView.addChild(new PIXI.Container());
     layerA.position.set(0, 0);
     layerA.addChild(new PIXI.Sprite(level.layerImage));
+    {
+        const x = level.isLandscape ? 0 : -4;
+        const y = level.isLandscape ? -4 : 0;
+        layerA.position.set(x, y);
+    }
 
     // 3. Layer B
     const layerB = mainView.addChild(new PIXI.Container());
     layerB.addChild(new PIXI.Sprite(level.layerImage));
-    const x = level.isLandscape ? 0 : level.layerSize.width + 16;
-    const y = level.isLandscape ? level.layerSize.height + 16 : 0;
-    layerB.position.set(x, y);
+    {
+        const x = level.isLandscape ? 0 : level.layerSize.width + 4;
+        const y = level.isLandscape ? level.layerSize.height + 4 : 0;
+        layerB.position.set(x, y);
+    }
 
     // 4. status
     const statusLabels = mainView.addChild(new PIXI.Container());
@@ -73,11 +80,6 @@ function drawLayerSlots(layer, slots) {
         sprite.position.set(slot.x, slot.y);
         layer.addChild(sprite);
     }
-}
-
-function drawLayerCorners(layer, radius) {
-    const mask = new PIXI.Graphics().beginFill(0xff0000, 1).drawRoundedRect(0, 0, layer.width, layer.height, radius).endFill();
-    layer.mask = layer.addChild(mask);
 }
 
 function initializeLayout(layout, level) {
