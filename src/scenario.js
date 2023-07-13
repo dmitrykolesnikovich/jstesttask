@@ -1,16 +1,19 @@
 const context = {
+
+    app: null,
     level: null,
     levelId: 0,
     score: 0,
-    app: null,
+
     reset() {
+        this.app.stage.removeChildren();
         this.level = null;
         if (this.levelId >= 5) {
             this.levelId = 0
         }
         this.score = 0;
-        this.app.stage.removeChildren();
     }
+
 }
 
 async function nextLevel() {
@@ -33,7 +36,7 @@ function hit(layer, slot) {
     }
     console.log(`score: ${context.score} (slot: ${slot.name})`);
     if (context.score >= context.level.size) {
-        setTimeout(async () => await win(context.level), 500);
+        setTimeout(async () => await win(context.level), 30);
     }
 }
 
