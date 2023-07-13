@@ -1,13 +1,17 @@
 const context = {
-    levelId: 1,
+    levelId: 4,
     score: 0,
 }
 
 async function nextLevel() {
-    if (context.levelId >= 5) return
-
+    // reset
+    if (context.levelId >= 5) {
+        context.levelId = 0
+    }
     context.score = 0;
     app.stage.removeChildren();
+
+    // setup
     const level = await buildLevel(++context.levelId);
     context.level = level;
     const layout = await buildLayout(level);
@@ -26,13 +30,11 @@ function hit(layer, slot) {
     }
     console.log(`score: ${context.score} (slot: ${slot.name})`);
     if (context.score >= context.level.size) {
-        win(context.level);
+        setTimeout(async () => await win(context.level), 500);
     }
 }
 
-function win(level) {
+async function win(level) {
     alert(`Уровень ${level.id} пройден!`);
-    (async function () {
-        await nextLevel();
-    })();
+    await nextLevel();
 }
