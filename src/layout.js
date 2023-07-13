@@ -37,30 +37,15 @@ function buildMainViewAndLayers(level) {
         layerB.position.set(x, y);
     }
 
-    // 4. status
-    const statusLabels = mainView.addChild(new PIXI.Container());
-    statusLabels.pivot.set(1, 1);
-    statusLabels.x = mainView.width;
-    statusLabels.y = mainView.height;
+    // 4. statusPanel
+    const statusPanel = mainView.addChild(new PIXI.Container());
+    statusPanel.pivot.set(1, 1);
+    statusPanel.x = mainView.width;
+    statusPanel.y = mainView.height;
+    context.scoreLabel = statusPanel.addChild(LabelWithDescription({paddingTop: 64, description: `Отличий найдено: `, color: 0x22ff22}));
+    context.mistakesLabel = statusPanel.addChild(LabelWithDescription({paddingTop: 128, description: `Ошибок: `, color: 0xff2222}));
 
-    const differencesText = statusLabels.addChild(new PIXI.Text(`Отличий найдено: `, {
-        fontFamily: 'Filmotype Major',
-        fontSize: 50,
-        fill: 'black',
-        align: 'right'
-    }));
-    differencesText.anchor.set(1, 1);
-    differencesText.y = 70
-
-    const mistakesText = statusLabels.addChild(new PIXI.Text(`Ошибок: `, {
-        fontFamily: 'Filmotype Major',
-        fontSize: 50,
-        fill: 'black'
-    }));
-    mistakesText.anchor.set(1, 1);
-    mistakesText.y = 140
-
-    // 5. title
+    // 7. title
     const titleLabel = mainView.addChild(new PIXI.Text(`Уровень ${level.id}`, {
         fontFamily: 'Filmotype Major',
         fontSize: 120,

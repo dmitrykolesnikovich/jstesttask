@@ -21,3 +21,28 @@ function GreenRectangle({x = 0, y = 0, width, height}) {
 function RedRectangle({x = 0, y = 0, width, height}) {
     return new PIXI.Graphics().lineStyle(4, 0xff2222, 1).drawRect(x, y, width, height);
 }
+
+function LabelWithDescription({paddingTop, description, color}) {
+    const label = new PIXI.Text(``, {
+        fontFamily: 'Filmotype Major',
+        fontSize: 44,
+        fill: color,
+        align: 'right'
+    });
+    label.anchor.set(1, 1);
+    label.y = paddingTop
+
+    const descriptionLabel = label.addChild(new PIXI.Text(description, {
+        fontFamily: 'Filmotype Major',
+        fontSize: 44,
+        fill: 'black',
+        align: 'right'
+    }));
+    descriptionLabel.anchor.set(1, 1);
+    descriptionLabel.position.x = -label.width;
+    label.invalidateText = (text) => {
+        label.text = text;
+        descriptionLabel.position.x = -label.width;
+    }
+    return label;
+}
