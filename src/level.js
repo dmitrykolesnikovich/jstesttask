@@ -1,8 +1,29 @@
-PIXI.Assets.init({
-    basePath: "../res"
-});
+class Level {
 
-async function loadLevel(levelId) {
+    id;
+    layerImage;
+    layerSize = {
+        width: 0,
+        height: 0,
+    };
+    slotsA = [];
+    slotsB = [];
+
+    get isLandscape() {
+        return this.layerSize.width > this.layerSize.height;
+    }
+
+}
+
+class Slot {
+    texture;
+    x;
+    y;
+    width;
+    height;
+}
+
+async function buildLevel(levelId) {
     const level = new Level();
     level.id = levelId;
 
@@ -15,7 +36,6 @@ async function loadLevel(levelId) {
                     width: slotJson.width,
                     height: slotJson.height
                 };
-                level.orientation = slotJson.width > slotJson.height ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
                 break;
             }
             case "LayerA": {
@@ -40,8 +60,4 @@ async function buildSlot(levelId, json) {
     slot.width = json.width;
     slot.height = json.height;
     return slot;
-}
-
-async function loadTexture(levelId, name) {
-    return await PIXI.Assets.load(`levels/${levelId}/images/${name}.jpg`);
 }

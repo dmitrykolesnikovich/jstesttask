@@ -1,6 +1,3 @@
-// resources
-await PIXI.Assets.load('fonts/Filmotype_Major.otf');
-
 // engine
 const canvas = initializeCanvas();
 const app = new PIXI.Application({
@@ -13,6 +10,7 @@ const app = new PIXI.Application({
 document.body.appendChild(app.view);
 
 // game
-const level = await loadLevel(4);
+await loadFont('fonts/Filmotype_Major.otf');
+const level = await buildLevel(4);
 const layout = await buildLayout(level);
 app.stage.addChild(layout);

@@ -1,4 +1,4 @@
-async function buildLayout(level) {
+function buildLayout(level) {
     // 1. mainView
     const {mainView, layerA, layerB} = buildMainViewWithLayers(level);
     drawLayerSlots(layerA, level.slotsA);
@@ -26,8 +26,8 @@ function buildMainViewWithLayers(level) {
     // 3. Layer B
     const layerB = mainView.addChild(new PIXI.Container());
     layerB.addChild(new PIXI.Sprite(level.layerImage));
-    const x = level.orientation === Orientation.LANDSCAPE ? 0 : level.layerSize.width + 16;
-    const y = level.orientation === Orientation.LANDSCAPE ? level.layerSize.height + 16 : 0;
+    const x = level.isLandscape ? 0 : level.layerSize.width + 16;
+    const y = level.isLandscape ? level.layerSize.height + 16 : 0;
     layerB.position.set(x, y);
 
     // 4. status
@@ -86,7 +86,7 @@ function initializeLayout(layout, level) {
     const canvas = document.querySelector("#mainCanvas");
 
     function resizeLayout() {
-        let width = level.orientation === Orientation.LANDSCAPE ? level.layerSize.width : 2 * level.layerSize.width;
+        let width = level.isLandscape ? level.layerSize.width : 2 * level.layerSize.width;
         const canvasWidth = parseFloat(canvas.style.width) + 2 * parseFloat(canvas.style.padding);
         const canvasHeight = parseFloat(canvas.style.height) + 2 * parseFloat(canvas.style.padding);
         const scale = canvasWidth / width;
