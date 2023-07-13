@@ -16,7 +16,7 @@ class Level {
 }
 
 class Slot {
-    image;
+    texture;
     x;
     y;
     width;

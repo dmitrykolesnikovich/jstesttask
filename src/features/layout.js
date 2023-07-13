@@ -1,45 +1,42 @@
-function buildLayout(level) {
-    const layout = new PIXI.Container();
-    layout.addChild(buildMainView(level));
-    layout.pivot.x = layout.width / 2;
-    layout.pivot.y = layout.height / 2;
+async function buildLayout(level) {
+    // 1. mainView
+    const {mainView, layerA, layerB} = buildMainViewWithLayers(level);
+    drawLayerSlots(layerA, level.slotsA);
+    drawLayerSlots(layerB, level.slotsB);
+    drawLayerCorners(layerA, 16);
+    drawLayerCorners(layerB, 16);
 
-    initializeLayout(level, layout);
+    // 2. layout
+    const layout = new PIXI.Container();
+    layout.addChild(mainView);
+    initializeLayout(layout, level);
     return layout;
 }
 
-function buildMainView(level) {
+function buildMainViewWithLayers(level) {
     // 1. main
     const mainView = new PIXI.Container();
     mainView.position.y = 92
 
-    // 2. spriteA
-    const spriteA = mainView.addChild(new PIXI.Sprite(level.layerImage));
-    drawRoundedCorners(spriteA, 24)
-    spriteA.position.set(0, 0);
+    // 2. Layer A
+    const layerA = mainView.addChild(new PIXI.Container());
+    layerA.position.set(0, 0);
+    layerA.addChild(new PIXI.Sprite(level.layerImage));
 
-    // 3. spriteB
-    const spriteB = mainView.addChild(new PIXI.Sprite(level.layerImage));
-    drawRoundedCorners(spriteB, 24)
+    // 3. Layer B
+    const layerB = mainView.addChild(new PIXI.Container());
+    layerB.addChild(new PIXI.Sprite(level.layerImage));
+    const x = level.orientation === Orientation.LANDSCAPE ? 0 : level.layerSize.width + 16;
+    const y = level.orientation === Orientation.LANDSCAPE ? level.layerSize.height + 16 : 0;
+    layerB.position.set(x, y);
 
-    switch (level.orientation) {
-        case Orientation.LANDSCAPE: {
-            spriteB.position.set(0, level.layerSize.height);
-            break;
-        }
-        case Orientation.PORTRAIT: {
-            spriteB.position.set(level.layerSize.width, 0);
-            break;
-        }
-    }
+    // 4. status
+    const statusLabels = mainView.addChild(new PIXI.Container());
+    statusLabels.pivot.set(1, 1);
+    statusLabels.x = mainView.width;
+    statusLabels.y = mainView.height;
 
-    const container = mainView.addChild(new PIXI.Container());
-    container.pivot.set(1, 1);
-    container.x = mainView.width;
-    container.y = mainView.height;
-
-    // 4. differencesText
-    const differencesText = container.addChild(new PIXI.Text(`Отличий найдено: `, {
+    const differencesText = statusLabels.addChild(new PIXI.Text(`Отличий найдено: `, {
         fontFamily: 'Filmotype Major',
         fontSize: 50,
         fill: 'black',
@@ -48,8 +45,7 @@ function buildMainView(level) {
     differencesText.anchor.set(1, 1);
     differencesText.y = 70
 
-    // 5. mistakesText
-    const mistakesText = container.addChild(new PIXI.Text(`Ошибок: `, {
+    const mistakesText = statusLabels.addChild(new PIXI.Text(`Ошибок: `, {
         fontFamily: 'Filmotype Major',
         fontSize: 50,
         fill: 'black'
@@ -57,21 +53,36 @@ function buildMainView(level) {
     mistakesText.anchor.set(1, 1);
     mistakesText.y = 140
 
-    // 6. levelText
-    const levelText = mainView.addChild(new PIXI.Text(`Уровень ${level.id}`, {
+    // 5. title
+    const titleLabel = mainView.addChild(new PIXI.Text(`Уровень ${level.id}`, {
         fontFamily: 'Filmotype Major',
         fontSize: 120,
         fill: 'black',
         align: 'center',
     }));
-    levelText.anchor.set(1)
-    levelText.x = mainView.width / 2;
-    levelText.y = -64;
+    titleLabel.anchor.set(1)
+    titleLabel.x = mainView.width / 2;
+    titleLabel.y = -64;
 
-    return mainView;
+    return {mainView, layerA, layerB};
 }
 
-function initializeLayout(level, layout) {
+function drawLayerSlots(layer, slots) {
+    for (let slot of slots) {
+        const sprite = new PIXI.Sprite(slot.texture);
+        sprite.position.set(slot.x, slot.y);
+        layer.addChild(sprite);
+    }
+}
+
+function drawLayerCorners(layer, radius) {
+    const mask = new PIXI.Graphics().beginFill(0xff0000, 1).drawRoundedRect(0, 0, layer.width, layer.height, radius).endFill();
+    layer.mask = layer.addChild(mask);
+}
+
+function initializeLayout(layout, level) {
+    layout.pivot.x = layout.width / 2;
+    layout.pivot.y = layout.height / 2;
     const canvas = document.querySelector("#mainCanvas");
 
     function resizeLayout() {

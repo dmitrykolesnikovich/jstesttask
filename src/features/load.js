@@ -6,24 +6,24 @@ async function loadLevel(levelId) {
     const level = new Level();
     level.id = levelId;
 
-    const json = await PIXI.Assets.load(`levels/${levelId}/level.json`);
-    for (let slot of json.slots) {
-        switch (slot.layer) {
+    const levelJson = await PIXI.Assets.load(`levels/${levelId}/level.json`);
+    for (let slotJson of levelJson.slots) {
+        switch (slotJson.layer) {
             case "standart": {
-                level.layerImage = await PIXI.Assets.load(`levels/${levelId}/images/${slot.name}.jpg`);
+                level.layerImage = await loadTexture(levelId, slotJson.name);
                 level.layerSize = {
-                    width: slot.width,
-                    height: slot.height
+                    width: slotJson.width,
+                    height: slotJson.height
                 };
-                level.orientation = slot.width > slot.height ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
+                level.orientation = slotJson.width > slotJson.height ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
                 break;
             }
             case "LayerA": {
-                level.slotsA.push(buildSlot(levelId, slot));
+                level.slotsA.push(await buildSlot(levelId, slotJson));
                 break;
             }
             case "LayerB": {
-                level.slotsB.push(buildSlot(levelId, slot));
+                level.slotsB.push(await buildSlot(levelId, slotJson));
                 break;
             }
         }
@@ -32,12 +32,16 @@ async function loadLevel(levelId) {
     return level;
 }
 
-function buildSlot(levelId, json) {
+async function buildSlot(levelId, json) {
     const slot = new Slot();
-    slot.image = `levels/${levelId}/images/${json.name}.jpg`;
+    slot.texture = await loadTexture(levelId, json.name);
     slot.x = json.x;
     slot.y = json.y;
     slot.width = json.width;
     slot.height = json.height;
     return slot;
+}
+
+async function loadTexture(levelId, name) {
+    return await PIXI.Assets.load(`levels/${levelId}/images/${name}.jpg`);
 }
