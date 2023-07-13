@@ -11,7 +11,7 @@ function Area({x = 0, y = 0, width, height}) {
 }
 
 function RedArea({x = 0, y = 0, width, height}) {
-    return new PIXI.Graphics().beginFill(0xff0000).drawRect(x, y, width, height).endFill()
+    return new PIXI.Graphics().beginFill(0xff0000, 0.35).drawRect(x, y, width, height).endFill()
 }
 
 function GreenRectangle({x = 0, y = 0, width, height}) {
