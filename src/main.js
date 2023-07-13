@@ -1,5 +1,6 @@
 // engine
-const canvas = initializeCanvas();
+const canvas = document.querySelector("#mainCanvas")
+initializeCanvas(canvas);
 const app = new PIXI.Application({
     background: 'white',
     antialias: true,

@@ -1,8 +1,6 @@
 const CANVAS_RATIO = 9.0 / 16.0;
 
-function initializeCanvas() {
-    const canvas = document.querySelector("#mainCanvas");
-
+function initializeCanvas(canvas) {
     function resizeCanvas() {
         // 1. actual ratio
         const emptySpace = 2 * parseInt(canvas.style.padding);
