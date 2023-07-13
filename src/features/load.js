@@ -15,6 +15,7 @@ async function loadLevel(levelId) {
                     width: slot.width,
                     height: slot.height
                 };
+                level.orientation = slot.width > slot.height ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
                 break;
             }
             case "LayerA": {

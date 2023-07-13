@@ -30,3 +30,4 @@ function initializeCanvas() {
     resizeCanvas();
     return canvas;
 }
+

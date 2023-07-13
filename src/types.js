@@ -5,6 +5,7 @@ const Orientation = {
 
 class Level {
     id;
+    orientation;
     layerImage;
     layerSize = {
         width: 0,
