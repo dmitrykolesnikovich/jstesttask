@@ -1,8 +1,15 @@
 function initializeLayout(app, level) {
     const layout = new PIXI.Container();
 
+
     // 1. main
     const mainContainer = layout.addChild(new PIXI.Container());
+    // Move container to the center
+    /**/
+
+    // Center bunny sprite in local container coordinates
+
+
     const spriteA = mainContainer.addChild(new PIXI.Sprite(level.layerImage));
     drawRoundedCorners(spriteA, 24)
     spriteA.position.set(0, 0);
@@ -19,9 +26,6 @@ function initializeLayout(app, level) {
             break;
         }
     }
-    mainContainer.pivot.x = mainContainer.width / 2;
-    mainContainer.pivot.y = mainContainer.height / 2;
-
 
     // 3. status
     const container = mainContainer.addChild(new PIXI.Container());
@@ -36,7 +40,7 @@ function initializeLayout(app, level) {
         align: 'right'
     }));
     differencesText.anchor.set(1, 1);
-    differencesText.y = 64
+    differencesText.y = 70
 
     const mistakesText = container.addChild(new PIXI.Text(`Ошибок: `, {
         fontFamily: 'Filmotype Major',
@@ -44,29 +48,35 @@ function initializeLayout(app, level) {
         fill: 'black'
     }));
     mistakesText.anchor.set(1, 1);
-    mistakesText.y = 128
+    mistakesText.y = 140
 
     // 2. levelText
     const levelText = mainContainer.addChild(new PIXI.Text(`Уровень ${level.id}`, {
         fontFamily: 'Filmotype Major',
-        fontSize: 100,
+        fontSize: 120,
         fill: 'black',
         align: 'center',
     }));
     levelText.anchor.set(1)
     levelText.x = mainContainer.width / 2;
-    levelText.y = -100;
+    levelText.y = -64;
 
     const canvas = document.querySelector("#mainCanvas");
 
     function resizeLayout() {
         let width = orientation === Orientation.LANDSCAPE ? level.layerSize.width : 2 * level.layerSize.width;
-        mainContainer.x = app.screen.width / 2;
-        mainContainer.y = app.screen.height / 2;
         const canvasWidth = parseFloat(canvas.style.width) + 2 * parseFloat(canvas.style.padding);
+        const canvasHeight = parseFloat(canvas.style.height) + 2 * parseFloat(canvas.style.padding);
+
         const scale = canvasWidth / width;
-        mainContainer.scale.set(scale * 0.77);
+        layout.scale.set(scale * 0.77);
+        layout.x = canvasWidth / 2;
+        layout.y = canvasHeight / 2;
     }
+
+    layout.pivot.x = layout.width / 2;
+    layout.pivot.y = layout.height / 2;
+    mainContainer.position.y = 92
 
     window.addEventListener('resize', resizeLayout);
     resizeLayout();
