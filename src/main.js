@@ -15,3 +15,4 @@ await loadFont('fonts/Filmotype_Major.otf');
 const level = await buildLevel(4);
 const layout = await buildLayout(level);
 app.stage.addChild(layout);
+setupGameLoop(level);
