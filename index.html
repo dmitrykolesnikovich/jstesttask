@@ -1,105 +1,25 @@
-<html lang="en">
+<html>
 <head>
-    <script src="https://pixijs.download/release/pixi.min.js"></script>
+    <script src="https://pixijs.download/release/pixi.js"></script>
     <title>test</title>
-    <style>* {
+    <style>
+    .app {
         padding: 0;
-        margin: 0
-    }</style>
+        margin: 0;
+        background: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    </style>
 </head>
-<body>
-<script>
-    const app = new PIXI.Application({
-        background: '#313434',
-        resolution: window.devicePixelRatio || 1,
-        width: window.innerWidth,
-        height: window.innerHeight,
-    });
-    app.renderer.autoDensity = true;
-    document.body.appendChild(app.view);
-    const container = new PIXI.Container();
-    app.stage.addChild(container);
+<body class="app">
+    <canvas id="mainCanvas" style="padding: 16px"></canvas>
 
-    const Orientation = {
-        LANDSCAPE: 1,
-        PORTRAIT: 2,
-    }
-
-    function loadLevel(levelId) {
-        container.removeChildren()
-        PIXI.Assets.loader.load(`levels/${levelId}/level.json`).then((level) => {
-            const mainSlot = level.slots.find(it => it.layer === "standart")
-            const orientation = mainSlot.width > mainSlot.height ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
-            const width = mainSlot.width;
-            const height = mainSlot.height;
-
-            window.onresize = () => {
-                const canvas_width = orientation == Orientation.LANDSCAPE ? mainSlot.width : 2 * mainSlot.width;
-                const canvas_height = orientation == Orientation.LANDSCAPE ? 2 * mainSlot.height : mainSlot.height;
-                const widthRatio = window.innerWidth / canvas_width;
-                const heightRatio = window.innerHeight / canvas_height;
-                const ratio = Math.min(widthRatio, heightRatio);
-                app.renderer.resize(window.innerWidth, window.innerHeight);
-                app.view.scale.set(ratio);
-            };
-            window.dispatchEvent(new Event('resize'));
-
-            const mainSprite = PIXI.Sprite.from(`levels/${levelId}/images/${mainSlot.name}.jpg`);
-            mainSprite.x = mainSlot.x;
-            mainSprite.y = mainSlot.y;
-            container.addChild(mainSprite);
-            for (let slot of level.slots) {
-                const sprite = PIXI.Sprite.from(`levels/${levelId}/images/${slot.name}.jpg`);
-                sprite.x = slot.x;
-                sprite.y = slot.y;
-                container.addChild(sprite);
-                sprite.interactive = true;
-
-                if (slot.layer === "LayerB" || slot.layer === "standart") {
-                    if (orientation === Orientation.LANDSCAPE) {
-                     const sprite = PIXI.Sprite.from(`levels/${levelId}/images/${slot.name}.jpg`);
-                        sprite.x = slot.x;
-                        sprite.y = slot.y + height;
-                        container.addChild(sprite);
-                        sprite.interactive = true;
-                        sprite.on('pointerdown', () => {
-                            if (slot.layer === "standart") return;
-                            const graphics = new PIXI.Graphics()
-                            graphics.lineStyle(4, 0x22ff22, 1);
-                            graphics.drawRect(sprite.x, sprite.y, sprite.width, sprite.height);
-                            graphics.endFill();
-                            container.addChild(graphics);
-                        });
-                    } else if (orientation === Orientation.PORTRAIT) {
-                        sprite.x += width;
-                    }
-                }
-
-                if (slot !== mainSlot) {
-                    sprite.on('pointerdown', () => {
-                        if (slot.layer === "standart") return;
-                        const graphics = new PIXI.Graphics()
-                        graphics.lineStyle(2, 0x22ff22, 1);
-                        graphics.drawRect(sprite.x, sprite.y, sprite.width, sprite.height);
-                        graphics.endFill();
-                        container.addChild(graphics);
-                    });
-                    // sprite.tint = new PIXI.Color(0xff0000);
-                } else {
-<!--                    sprite.on('pointerdown', (event) => {-->
-<!--                        const graphics = new PIXI.Graphics()-->
-<!--                        graphics.lineStyle(2, 0xff2222, 1);-->
-<!--                        graphics.drawRect(event.x, event.y, 64, 64);-->
-<!--                        graphics.endFill();-->
-<!--                        sprite.addChild(graphics);-->
-<!--                        graphics.alpha = 1;-->
-<!--                    });-->
-                }
-            }
-        });
-    }
-
-    loadLevel(5);
-</script>
+    <script src="src/features/layout.js"></script>
+    <script src="src/features/load.js"></script>
+    <script src="src/features/view.js"></script>
+    <script src="src/types.js"></script>
+    <script src="src/main.js" type="module"></script>
 </body>
 </html>
